@@ -1,112 +1,119 @@
-if (typeof module === "object" && typeof module.exports === "object") module.exports = Lexer;
+'use strict';
 
-Lexer.defunct = function (chr) {
-    throw new Error("Unexpected character at index " + (this.index - 1) + ": " + chr);
-};
-
-function Lexer(defunct) {
-    if (typeof defunct !== "function") defunct = Lexer.defunct;
-
-    var tokens = [];
-    var rules = [];
-    var remove = 0;
-    this.state = 0;
-    this.index = 0;
-    this.input = "";
-
-    this.addRule = function (pattern, action, start) {
-        var global = pattern.global;
-
+class Lexer {
+    static defunct(chr) {
+        throw new Error('Unexpected character at index ' + (this.index - 1) + ': ' + chr);
+    }
+    static addRule(pattern, action, start) {
+        let global = pattern.global;
         if (!global) {
-            var flags = "g";
-            if (pattern.multiline) flags += "m";
-            if (pattern.ignoreCase) flags += "i";
+            let flags = `g${ pattern.multiline ? 'm' : '' }${ pattern.ignoreCase ? 'i' : '' }`;
             pattern = new RegExp(pattern.source, flags);
         }
-
-        if (Object.prototype.toString.call(start) !== "[object Array]") start = [0];
-
-        rules.push({
+        if (!(action instanceof Function)) {
+            let token = action;
+            action = lexeme => token;
+        }
+        if (!start) {
+            start = [0];
+        }
+        if (!this.hasOwnProperty('rules')) {
+            this.rules = [];
+        }
+        this.rules.push({
             pattern: pattern,
             global: global,
             action: action,
             start: start
         });
-
-        return this;
-    };
-
-    this.setInput = function (input) {
-        remove = 0;
+    }
+    constructor(defunct) {
+        if (defunct instanceof Function) {
+            this.defunct = defunct;
+        } else {
+            this.defunct = this.constructor.defunct;
+        }
+        this._tokens = [];
+        this._remove = 0;
         this.state = 0;
         this.index = 0;
-        tokens.length = 0;
+        this.input = '';
+    }
+    setInput(input) {
+        this._tokens.length = 0;
+        this._remove = 0;
+        this.state = 0;
+        this.index = 0;
         this.input = input;
         return this;
-    };
-
-    this.lex = function () {
+    }
+    lex() {
+        let tokens = this._tokens;
+        let input = this.input;
         if (tokens.length) return tokens.shift();
-
         this.reject = true;
-
-        while (this.index <= this.input.length) {
-            var matches = scan.call(this).splice(remove);
-            var index = this.index;
-
+        while (this.index <= input.length) {
+            let matches = this._scan().splice(this._remove);
+            let index = this.index;
             while (matches.length) {
                 if (this.reject) {
-                    var match = matches.shift();
-                    var result = match.result;
-                    var length = match.length;
+                    let match = matches.shift();
+                    let result = match.result;
+                    let length = match.length;
                     this.index += length;
                     this.reject = false;
-                    remove++;
-
-                    var token = match.action.apply(this, result);
-                    if (this.reject) this.index = result.index;
-                    else if (typeof token !== "undefined") {
-                        switch (Object.prototype.toString.call(token)) {
-                        case "[object Array]":
+                    this._remove++;
+                    let token = match.action.apply(this, result);
+                    if (this.reject) {
+                        this.index = result.index;
+                    }
+                    else if (typeof token !== 'undefined') {
+                        if (Array.isArray(token)) {
                             tokens = token.slice(1);
                             token = token[0];
-                        default:
-                            if (length) remove = 0;
+                        } else {
+                            if (length) this._remove = 0;
                             return token;
                         }
                     }
-                } else break;
+                } else {
+                    break;
+                }
             }
-
-            var input = this.input;
-
             if (index < input.length) {
                 if (this.reject) {
-                    remove = 0;
-                    var token = defunct.call(this, input.charAt(this.index++));
-                    if (typeof token !== "undefined") {
-                        if (Object.prototype.toString.call(token) === "[object Array]") {
+                    this._remove = 0;
+                    let token = this.defunct(input.charAt(this.index++));
+                    if (typeof token !== 'undefined') {
+                        if (Array.isArray(token)) {
                             tokens = token.slice(1);
                             return token[0];
-                        } else return token;
+                        } else {
+                            return token;
+                        }
                     }
                 } else {
-                    if (this.index !== index) remove = 0;
+                    if (this.index !== index) {
+                        this._remove = 0;
+                    }
                     this.reject = true;
                 }
-            } else if (matches.length)
+            } else if (matches.length) {
                 this.reject = true;
-            else break;
+            } else {
+                break;
+            }
         }
-    };
-
-    function scan() {
+    }
+    _scan() {
         var matches = [];
         var index = 0;
 
         var state = this.state;
         var lastIndex = this.index;
         var input = this.input;
+
+        let rules = this.constructor.rules;
 
         for (var i = 0, length = rules.length; i < length; i++) {
             var rule = rules[i];
@@ -140,7 +147,8 @@ function Lexer(defunct) {
                 }
             }
         }
-
         return matches;
     }
 }
+
+module.exports = Lexer;

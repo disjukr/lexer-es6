@@ -1,29 +1,21 @@
 {
-    "name": "lex",
-    "description": "An elegant armor-plated JavaScript lexer modelled after flex. Easily extensible to tailor to your need for perfection.",
-    "version": "1.7.9",
-    "keywords": ["lex", "lexer", "lexical", "analysis", "scan", "scanner", "scanning", "token", "tokenize", "tokenizer", "tokenization", "flex", "jison"],
-    "author": "Aadit M Shah (http://aaditmshah.github.com/) <aaditmshah@fastmail.fm>",
+    "name": "lex-es6",
+    "description": "es6 version of aaditmshah/lexer",
+    "version": "1.0.0",
+    "keywords": ["lex", "es6", "es2015", "lexer", "lexical", "analysis", "scan", "scanner", "scanning", "token", "tokenize", "tokenizer", "tokenization", "flex", "jison"],
+    "author": "JongChan Choi <jong@chan.moe>",
     "main": "lexer.js",
-    "maintainers": [{
-        "name": "Aadit M Shah",
-        "email": "aaditmshah@fastmail.fm",
-        "web": "http://aaditmshah.github.com/"
-    }],
-    "contributors": [{
-        "name": "Aadit M Shah",
-        "email": "aaditmshah@fastmail.fm",
-        "web": "http://aaditmshah.github.com/"
-    }],
-    "bugs": "https://github.com/aaditmshah/lexer/issues",
     "licenses": [{
         "type": "MIT",
         "url": "http://opensource.org/licenses/MIT"
     }],
+    "homepage": "https://github.com/disjukr/lexer-es6",
     "repository": {
         "type": "git",
-        "url": "https://github.com/aaditmshah/lexer.git"
+        "url": "https://github.com/disjukr/lexer-es6.git"
     },
     "dependencies": {},
-    "homepage": "https://github.com/aaditmshah/lexer"
+    "engines": {
+        "node": ">=4.0.0"
+    }
 }
