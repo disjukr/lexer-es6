@@ -70,10 +70,11 @@ class Lexer {
                         if (Array.isArray(token)) {
                             this._tokens = token.slice(1);
                             token = token[0];
-                        } else {
-                            if (length) this._remove = 0;
-                            return token;
                         }
+                        if (length) {
+                            this._remove = 0;
+                        }
+                        return token;
                     }
                 } else {
                     break;

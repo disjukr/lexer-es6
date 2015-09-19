@@ -1,7 +1,7 @@
 {
     "name": "lex-es6",
     "description": "es6 version of aaditmshah/lexer",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "keywords": ["lex", "es6", "es2015", "lexer", "lexical", "analysis", "scan", "scanner", "scanning", "token", "tokenize", "tokenizer", "tokenization", "flex", "jison"],
     "author": "JongChan Choi <jong@chan.moe>",
     "main": "lexer.js",
