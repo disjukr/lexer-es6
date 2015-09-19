@@ -48,9 +48,8 @@ class Lexer {
         return this;
     }
     lex() {
-        let tokens = this._tokens;
         let input = this.input;
-        if (tokens.length) return tokens.shift();
+        if (this._tokens.length) return this._tokens.shift();
         this.reject = true;
         while (this.index <= input.length) {
             let matches = this._scan().splice(this._remove);
@@ -69,7 +68,7 @@ class Lexer {
                     }
                     else if (typeof token !== 'undefined') {
                         if (Array.isArray(token)) {
-                            tokens = token.slice(1);
+                            this._tokens = token.slice(1);
                             token = token[0];
                         } else {
                             if (length) this._remove = 0;
@@ -86,7 +85,7 @@ class Lexer {
                     let token = this.defunct(input.charAt(this.index++));
                     if (typeof token !== 'undefined') {
                         if (Array.isArray(token)) {
-                            tokens = token.slice(1);
+                            this._tokens = token.slice(1);
                             return token[0];
                         } else {
                             return token;
