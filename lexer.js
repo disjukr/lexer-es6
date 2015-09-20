@@ -12,7 +12,10 @@ class Lexer {
         }
         if (!(action instanceof Function)) {
             let token = action;
-            action = lexeme => token;
+            action = function (lexeme) {
+                this.yytext = lexeme;
+                return token;
+            };
         }
         if (!start) {
             start = [0];
